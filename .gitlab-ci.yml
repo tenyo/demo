@@ -1,0 +1,24 @@
+image: "ruby:2.3"
+
+test:
+  script:
+  - apt-get update -qy
+  - gem update bundler
+  - bundle install --path /cache
+  - bundle exec rspec
+
+staging:
+  type: deploy
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=still-cove-59725 --api-key=$HEROKU_STAGING_API_KEY
+  only:
+  - master
+
+production:
+  type: deploy
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=gitlab-ci-ruby-test-prod --api-key=$HEROKU_PRODUCTION_API_KEY
+  only:
+  - tags
